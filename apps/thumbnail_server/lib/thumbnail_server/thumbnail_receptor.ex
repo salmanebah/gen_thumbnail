@@ -6,10 +6,16 @@ defmodule ThumbnailServer.Receptor do
     GenServer.start_link(__MODULE__, receptor_name, opts)
   end
 
-  def submit(thumbnail_path) do
+  def submit(receptor, thumbnail_path) do
+    
   end
 
-  def init(receptor_name) do
+  def retrieve(receptor, job_id) do
+    
+  end
+
+  def init(_receptor_name) do
+    {:ok, %{}}
   end
 
   def stop(receptor) do

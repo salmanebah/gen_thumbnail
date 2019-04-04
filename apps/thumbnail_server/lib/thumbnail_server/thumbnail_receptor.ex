@@ -1,5 +1,6 @@
 defmodule ThumbnailServer.Receptor do
   use GenServer
+  
 
   def start_link(opts \\ []) do
     receptor_name = Keyword.fetch!(opts, :name)
@@ -7,7 +8,7 @@ defmodule ThumbnailServer.Receptor do
   end
 
   def submit(receptor, thumbnail_path) do
-    
+    GenServer.call(receptor, {:submit, thumbnail_path})
   end
 
   def retrieve(receptor, job_id) do
@@ -19,8 +20,15 @@ defmodule ThumbnailServer.Receptor do
   end
 
   def stop(receptor) do
+    GenServer.stop(receptor)
   end
 
   def handle_call({:submit, thumbnail_path}, from, receptor_state) do
+    job_id = UUID.uuid1()
+    # create thumbnail store under supervision and save (job_id, store ) mapping
+  end
+
+  def handle_call({:retrieve, job_id}) do
+
   end
 end

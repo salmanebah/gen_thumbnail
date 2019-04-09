@@ -1,5 +1,6 @@
 defmodule ThumbnailServer.Receptor do
   use GenServer
+  require Logger
   
 
   def start_link(opts \\ []) do
@@ -12,7 +13,7 @@ defmodule ThumbnailServer.Receptor do
   end
 
   def retrieve(receptor, job_id) do
-    
+    GenServer.call(receptor, {:retrieve, job_id})
   end
 
   def init(_receptor_name) do
@@ -25,10 +26,13 @@ defmodule ThumbnailServer.Receptor do
 
   def handle_call({:submit, thumbnail_path}, from, receptor_state) do
     job_id = UUID.uuid1()
-    # create thumbnail store under supervision and save (job_id, store ) mapping
+    {:ok, store} = DynamicSupervisor.start_child(ThumbnailServer.StoreSupervisor, ThumbnailServer.Store)
+    # add child monitoring here, create worker
+    Map.put(receptor_state, job_id, store)
+    {:reply, job_id}
   end
 
-  def handle_call({:retrieve, job_id}) do
-
+  def handle_call({:retrieve, job_id}, _from, receptor_state) do
+    {:reply, Map.fetch(receptor_state, job_id)}
   end
 end

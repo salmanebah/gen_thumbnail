@@ -8,12 +8,10 @@ defmodule ThumbnailServer.Application do
   def start(_type, _args) do
     # List all child processes to be supervised
     children = [
-      # Starts a worker by calling: ThumbnailServer.Worker.start_link(arg)
-      # {ThumbnailServer.Worker, arg}
+      {DynamicSupervisor, name: ThumbnailServer.StoreSupervisor, strategy: one_for_one},
+      {ThumbnailServer.Receptor, name: ThumbnailServer.Receptor}
     ]
 
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
     opts = [strategy: :one_for_one, name: ThumbnailServer.Supervisor]
     Supervisor.start_link(children, opts)
   end

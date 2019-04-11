@@ -28,7 +28,7 @@ defmodule ThumbnailServer.Receptor do
     job_id = UUID.uuid1()
     {:ok, store} = DynamicSupervisor.start_child(ThumbnailServer.StoreSupervisor, ThumbnailServer.Store)
     # add child monitoring here, create worker
-    
+    {:ok, min_task, mid_task, max_task} = ThumbnailServer.Worker.submit(thumbnail_path, store)
     Map.put(receptor_state, job_id, store)
     {:reply, job_id}
   end

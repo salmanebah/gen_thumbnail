@@ -9,6 +9,7 @@ defmodule ThumbnailServer.Application do
     # List all child processes to be supervised
     children = [
       {DynamicSupervisor, name: ThumbnailServer.StoreSupervisor, strategy: one_for_one},
+      {Task.Supervisor, name: ThumbnailServer.WorkerSupervisor},	
       {ThumbnailServer.Receptor, name: ThumbnailServer.Receptor}
     ]
 

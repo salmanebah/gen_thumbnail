@@ -24,16 +24,15 @@ defmodule ThumbnailServer.Receptor do
     GenServer.stop(receptor)
   end
 
-  def handle_call({:submit, thumbnail_path}, from, receptor_state) do
+  def handle_call({:submit, thumbnail_path}, _from, receptor_state) do
     job_id = UUID.uuid1()
     {:ok, store} = DynamicSupervisor.start_child(ThumbnailServer.StoreSupervisor, ThumbnailServer.Store)
     # add child monitoring here, create worker
-    {:ok, min_task, mid_task, max_task} = ThumbnailServer.Worker.submit(thumbnail_path, store)
-    Map.put(receptor_state, job_id, store)
-    {:reply, job_id}
+    {:ok, _min_task, _mid_task, _max_task} = ThumbnailServer.Worker.submit(thumbnail_path, store)
+    {:reply, {:ok, job_id}, Map.put(receptor_state, job_id, store)}
   end
 
   def handle_call({:retrieve, job_id}, _from, receptor_state) do
-    {:reply, Map.fetch(receptor_state, job_id)}
+    {:reply, Map.fetch(receptor_state, job_id), receptor_state}
   end
 end

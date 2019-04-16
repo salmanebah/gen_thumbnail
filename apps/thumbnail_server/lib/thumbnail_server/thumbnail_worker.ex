@@ -12,7 +12,7 @@ defmodule ThumbnailServer.Worker do
   def execute(thumbnail_path, store, format) when is_binary(thumbnail_path) and is_atom(format) do
     case create_thumbnail(thumbnail_path, to_size(format)) do
       {:ok, created_thumbnail_path} -> Store.add_thumbnail(store, format, created_thumbnail_path)
-      {:error} -> Logger.warn("error while creating thumbnail for #{thumbnail_path}")
+      _other -> Logger.warn("error while creating thumbnail for #{thumbnail_path}")
     end
   end
 
@@ -20,13 +20,9 @@ defmodule ThumbnailServer.Worker do
     Logger.info("convert #{thumbnail_path} to #{size}%")
     storage_directory = Application.get_env(:thumbnail_server, :thumbnail_storage_directory) || "/tmp/thumbnail"
     created_thumbnail_path = storage_directory <> "/" <> "#{size}_" <> Path.basename(thumbnail_path)
-    port = Port.open({:spawn_executable , "/usr/bin/convert"},
-      [:binary, args: [thumbnail_path, "-resize", "#{size}%", created_thumbnail_path]])
-
-    receive do
-      {^port, {:exit_status, 0}} ->  {:ok, created_thumbnail_path}
-      _other -> {:error}
-    end    
+    Port.open({:spawn_executable, "/usr/bin/convert"},
+      [args: [thumbnail_path, "-resize", "#{size}%", created_thumbnail_path]])
+    {:ok, created_thumbnail_path}    
   end
 
   defp to_size(:min), do: 25

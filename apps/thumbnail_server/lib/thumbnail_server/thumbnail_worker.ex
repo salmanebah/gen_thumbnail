@@ -18,11 +18,13 @@ defmodule ThumbnailServer.Worker do
 
   defp create_thumbnail(thumbnail_path, size) when is_integer(size) do
     Logger.info("convert #{thumbnail_path} to #{size}%")
-    storage_directory = Application.get_env(:thumbnail_server, :thumbnail_storage_directory) || "/tmp/thumbnail"
-    created_thumbnail_path = storage_directory <> "/" <> "#{size}_" <> Path.basename(thumbnail_path)
+    storage_directory = Application.get_env(:thumbnail_server, :thumbnail_storage_directory)
+    thumbnail_filename = "#{size}_" <> Path.basename(thumbnail_path)
+    created_thumbnail_path = storage_directory <> "/" <> thumbnail_filename
+    exposed_thumbnail_path = "/thumbnails/" <> thumbnail_filename
     Port.open({:spawn_executable, "/usr/bin/convert"},
       [args: [thumbnail_path, "-resize", "#{size}%", created_thumbnail_path]])
-    {:ok, created_thumbnail_path}    
+    {:ok, exposed_thumbnail_path}
   end
 
   defp to_size(:min), do: 25

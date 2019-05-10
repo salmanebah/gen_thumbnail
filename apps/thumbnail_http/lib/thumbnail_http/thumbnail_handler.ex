@@ -13,6 +13,11 @@ defmodule ThumbnailHTTP.Handler do
   end
 
   def submit_image(conn, filename, path) do
-    
+    image_path = Application.get_env(:thumbnail_server, :thumbnail_storage_directory) <> "/" <> filename
+    File.copy!(path, image_path)
+    case Receptor.submit(ThumbnailServer.Receptor, image_path) do
+      {:ok, thumbnail_job_id} -> conn |> Conn.put_resp_content_type("application/json") |> Conn.send_resp(:created, Poison.encode!(%{"thumbnail_job_id" => thumbnail_job_id}))
+      _ -> conn |> Conn.put_resp_content_type("application/json") |> Conn.send_resp(:bad_request, "")
+    end
   end
 end

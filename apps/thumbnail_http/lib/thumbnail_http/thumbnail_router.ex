@@ -5,11 +5,13 @@ defmodule ThumbnailHTTP.Router do
   plug Plug.Logger
   plug :match
   plug Plug.Static, at: "/thumbnails", from: "/tmp/thumbnail"
+  plug Plug.Parsers,  parsers: [:urlencoded, :multipart],  pass: ["*/*"]
   plug :dispatch
 
 
   post "/thumbnails" do
-    
+    %Plug.Upload{filename: filename, path: path} = conn.body_params["image"]
+    Handler.submit_image(conn, filename, path)
   end
 
   get "/thumbnails/:thumbnail_job_id" do

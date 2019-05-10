@@ -11,4 +11,8 @@ defmodule ThumbnailHTTP.Handler do
       :error -> conn |> Conn.put_resp_content_type("application/json") |> Conn.send_resp(:not_found, "")
     end
   end
+
+  def submit_image(conn, filename, path) do
+    
+  end
 end

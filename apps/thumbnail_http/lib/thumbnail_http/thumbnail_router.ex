@@ -2,12 +2,11 @@ defmodule ThumbnailHTTP.Router do
   use Plug.Router
   alias ThumbnailHTTP.Handler
 
-  plug Plug.Logger
-  plug :match
-  plug Plug.Static, at: "/thumbnails", from: "/tmp/thumbnail"
-  plug Plug.Parsers,  parsers: [:urlencoded, :multipart],  pass: ["*/*"]
-  plug :dispatch
-
+  plug(Plug.Logger)
+  plug(:match)
+  plug(Plug.Static, at: "/thumbnails", from: "/tmp/thumbnails")
+  plug(Plug.Parsers, parsers: [:urlencoded, :multipart], pass: ["*/*"])
+  plug(:dispatch)
 
   post "/thumbnails" do
     %Plug.Upload{filename: filename, path: path} = conn.body_params["image"]

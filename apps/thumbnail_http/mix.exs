@@ -28,7 +28,7 @@ defmodule ThumbnailHTTP.MixProject do
     [
       {:thumbnail_server, in_umbrella: true},
       {:plug_cowboy, "~> 2.0.2"},
-      {:poison, "~> 4.0.1"}	
+      {:poison, "~> 4.0.1"}
     ]
   end
 end

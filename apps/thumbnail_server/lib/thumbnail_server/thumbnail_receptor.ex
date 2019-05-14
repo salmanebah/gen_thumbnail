@@ -1,7 +1,6 @@
 defmodule ThumbnailServer.Receptor do
   use GenServer
   require Logger
-  
 
   def start_link(opts \\ []) do
     receptor_name = Keyword.fetch!(opts, :name)
@@ -26,7 +25,10 @@ defmodule ThumbnailServer.Receptor do
 
   def handle_call({:submit, thumbnail_path}, _from, receptor_state) do
     job_id = UUID.uuid1()
-    {:ok, store} = DynamicSupervisor.start_child(ThumbnailServer.StoreSupervisor, ThumbnailServer.Store)
+
+    {:ok, store} =
+      DynamicSupervisor.start_child(ThumbnailServer.StoreSupervisor, ThumbnailServer.Store)
+
     # add child monitoring here, create worker
     {:ok, _min_task, _mid_task, _max_task} = ThumbnailServer.Worker.submit(thumbnail_path, store)
     {:reply, {:ok, job_id}, Map.put(receptor_state, job_id, store)}

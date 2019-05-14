@@ -19,7 +19,7 @@ defmodule ThumbnailServer.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {ThumbnailServer.Application, []},
+      mod: {ThumbnailServer.Application, []}
     ]
   end
 

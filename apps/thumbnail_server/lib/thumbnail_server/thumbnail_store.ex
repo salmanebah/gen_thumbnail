@@ -17,5 +17,5 @@ defmodule ThumbnailServer.Store do
 
   def add_thumbnail(store, :max, url) do
     Agent.update(store, fn current_state -> %{current_state | max_thumbnail_url: url} end)
-  end  
+  end
 end

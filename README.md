@@ -1,13 +1,14 @@
 # GenThumbnail
-Exploring the actor model, BEAM and Supervisor trees.
-`gen_thumbnail` is a set of two applications that create thumbnails (25%, 50% and 200% version) for a given image.
+Exploring the actor model, BEAM, OTP and Supervision tree.
+
+`gen_thumbnail` is a set of two applications that create thumbnails (`25%`, `50%` and `200%` version) for a given image.
 ## Architecture
 The `thumbnail_http` project exposes a simple REST API and is based on the awesome (Plug)[https://github.com/elixir-plug/plug] specification.
 The `thumbnail_server` project has all the logic for thumbnails creation: a (GenServer)[https://hexdocs.pm/elixir/GenServer.html] `thumbnail_receptor`:
 1. Receives the query
 2. Starts an (Agent)[https://hexdocs.pm/elixir/Agent.html] (i.e `thumbnail_store`) that stores all the paths to the differents thumbnails of the query
 3. Spawn four (Tasks)[https://hexdocs.pm/elixir/Task.html] (i.e `thumbnail_worker`) that create the different thumbnails. Each Task uses a (Port)[https://hexdocs.pm/elixir/Port.html] 
-   to launch the linux command `convert` for the creation of the thumbnail
+   to launch the linux command `convert` for the creation of the thumbnail.
 ## Running
 `iex -S mix`
 
